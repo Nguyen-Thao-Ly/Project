@@ -12,6 +12,8 @@ LANG = {
         "creator" : "Người tạo lập : Rikim",
         "contact" : "Liên hệ Discord : Rikim_cute",
         "start" : "Nhấn Enter để bắt đầu...",
+        "label_example" : "Văn bản mẫu : ",
+        "label_user" : "Bạn đã gõ   : ",
         "upgrade" : "Bạn đã đủ điều kiện thăng cấp. Bạn có muốn thăng cấp không?",
         "level max" : "Bạn đã ở cấp cao nhất rồi.",
         "level up" : "Đã lên cấp!",
@@ -27,6 +29,8 @@ LANG = {
         "creator" : "Creator : Rikim",
         "contact" : "Discord : Rikim_cute",
         "start" : "Press Enter to start...",
+        "label_example" : "Example text : ",
+        "label_user" : "Your text    : ",
         "upgrade" : "You are eligible for level up. Do you want to upgrade?",
         "level up" : "Leveled up!",
         "level max" : "You're already at the highest level.",
@@ -38,6 +42,9 @@ LANG = {
         "end" : "See you again. Practice typing regularly!"
     }
 }
+
+
+
 
 def count_words(text) :
     text = text.translate(str.maketrans("", "", string.punctuation))
@@ -52,6 +59,7 @@ def load_game() :
 def save_game(s) :
     with open(SAVE_FILE, "w", encoding = "utf-8") as f :
         json.dump(s, f, ensure_ascii = False, indent = 4)
+
 
 def main() :
     lang = input("Please choose the language for the interface (vi/en) : ").strip().lower()
@@ -100,8 +108,12 @@ def main() :
             s["lose"] += 1
             s["win"] = 0
             
-            if user_input != text : print_color(RED, T["WA"])
-            if used > limit : print_color(RED, T["tle"])
+            if user_input != text :
+                print_color(RED, T["WA"])
+                show_mistake(text, user_input, T["label_example"], T["label_user"])
+                
+            if used > limit :
+                print_color(RED, T["tle"])
             
 
         if lang == "vi" : print_color(GREY, f"Chuỗi thắng : {s['win']} | Chuỗi thua : {s['lose']}")
@@ -112,13 +124,14 @@ def main() :
             s["lose"] = 0
             print_color(RED, T["lose 5"])
 
-        if success and (s["words"] >= 30 or s["completed_times"] >= 5) :
+        if success and s["completed_times"] >= 5:
             print_color(GREEN, T["upgrade"])
             if s["level"] == 12  :
                 print_color(BLUE, T["level max"])
 
             else :
                 if input("(Yes/No) : ").lower() in ["yes","y","co","có"] :
+                    clear_screen()
                     if s["level"] < MAX_LEVEL :
                         s["level"] += 1
                         s["words"] = s["completed_times"] = 0
