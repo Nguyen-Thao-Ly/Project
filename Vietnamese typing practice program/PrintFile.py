@@ -1,4 +1,3 @@
-from LangInterface import *
 import time, os
 
 RESET = "\033[0m"
@@ -45,3 +44,4 @@ def show_mistake(text, user_input, label_example, label_user):
         
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
+
